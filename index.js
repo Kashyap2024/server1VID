@@ -76,12 +76,24 @@ app.post('/api/html', async (req, res) => {
         if (m3u8Match) {
             const valueBeforeM3u8pipe = m3u8Match[1];
             const parts = valueBeforeM3u8pipe.split('|');
+            
             if (parts.length === 1) {
                 valueBeforeM3u8 = parts[0];
             } else if (parts.length === 2) {
-                valueBeforeM3u8 = `${parts[1]}-${parts[0]}`;
+                // Check if parts[1] is a number
+                if (!isNaN(parts[1])) {
+                    valueBeforeM3u8 = parts[0];
+                } else {
+                    valueBeforeM3u8 = `${parts[1]}-${parts[0]}`;
+                }
+            } else {
+                console.error('Unexpected parts length for m3u8 match.');
             }
+            console.log(valueBeforeM3u8);
+        } else {
+            console.error('m3u8 match not found.');
         }
+
 
         if (dataMatch) {
             dataValue = dataMatch[1];
