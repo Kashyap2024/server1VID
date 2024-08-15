@@ -80,8 +80,9 @@ app.post('/api/html', async (req, res) => {
             if (parts.length === 1) {
                 valueBeforeM3u8 = parts[0];
             } else if (parts.length === 2) {
-                // Check if parts[1] is a number
-                if (!isNaN(parts[1])) {
+                // Check if parts[1] is a number and not an acceptable token
+                if (!isNaN(parts[1]) && parts[1].length > 6) {
+                    // If parts[1] is a long number, exclude it
                     valueBeforeM3u8 = parts[0];
                 } else {
                     valueBeforeM3u8 = `${parts[1]}-${parts[0]}`;
@@ -93,6 +94,7 @@ app.post('/api/html', async (req, res) => {
         } else {
             console.error('m3u8 match not found.');
         }
+        
 
 
         if (dataMatch) {
