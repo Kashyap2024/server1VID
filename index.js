@@ -124,17 +124,17 @@ app.post('/api/html', async (req, res) => {
         // Fetch the m3u8 link
         const response = await fetch(fileLink);
         console.log('Fetch response status:', response.status);
+        return res.json({
+            type: 'embed',
+            source: fileLink,
+            message: 'm3u8 link generated successfully'
+        });
 
-        if (response.ok) {
-            return res.json({
-                type: 'embed',
-                source: fileLink,
-                message: 'm3u8 link generated successfully'
-            });
-        } else {
-            console.error('Failed to fetch m3u8 link, status:', response.status);
-            return res.status(response.status).json({ error: 'Failed to fetch m3u8 link' });
-        }
+        // if (response.ok) {
+        // } else {
+        //     console.error('Failed to fetch m3u8 link, status:', response.status);
+        //     return res.status(response.status).json({ error: 'Failed to fetch m3u8 link' });
+        // }
     } catch (error) {
         console.error('Error during processing:', error.message);
         return res.status(500).json({ error: 'Error during processing: ' + error.message });
