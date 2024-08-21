@@ -10,6 +10,7 @@ app.use(bodyParser.text({ type: 'text/html' }));
 app.post('/api/html', async (req, res) => {
     try {
         const videoPageContent = req.body;
+        // console.log(videoPageContent);
 
         // Initialize variables
         let fileLink = '';
@@ -39,7 +40,7 @@ app.post('/api/html', async (req, res) => {
         const cValueRegular = /ab:\[{[^]*?([0-9]+\.[0-9])&/;
         const asnValueRegular = /\|text\|([^|]+)\|/;
         const spValueRegular = /\|([^|]+)\|sp\|/;
-        const pallValueRegular = /\|file\|([^|]+)\|/;
+        const pallValueRegular = /\|file\|(?:vtt\|)?([^|]+)\|/;
         const cookieValueRegular = /\$.cookie\('file_id',\s*'([^']+)/;
 
         // Processing the HTML content with regex matches
@@ -66,6 +67,10 @@ app.post('/api/html', async (req, res) => {
         if (newPatternMatch) {
             const reversebefore = `${newPatternMatch[1]}|${newPatternMatch[2]}|hls2`;
             newPattern = reversebefore.split('|').reverse().join('/');
+        } else {
+            const hgagecdnMatch = videoPageContent.match(/\|(\d{5})\|hgagecdn\|/);
+            const expandedMatch = videoPageContent.match(/\|(\d{2})\|expanded\|/);
+            newPattern = `hls2/${expandedMatch[1]}/${hgagecdnMatch[1]}`
         }
 
         if (langMatch) {
@@ -90,7 +95,7 @@ app.post('/api/html', async (req, res) => {
             } else {
                 console.error('Unexpected parts length for m3u8 match.');
             }
-            console.log(valueBeforeM3u8);
+            // console.log(valueBeforeM3u8);
         } else {
             console.error('m3u8 match not found.');
         }
@@ -124,6 +129,7 @@ app.post('/api/html', async (req, res) => {
 
         if (pallMatch) {
             pallValue = pallMatch[1];
+            // console.log(pallValue);
         }
 
         if (cookieMatch) {
